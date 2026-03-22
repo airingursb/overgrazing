@@ -100,9 +100,29 @@ export function createScratchCard(contentHTML, width = '100%') {
     });
   };
 
-  // Setup after mounting
-  requestAnimationFrame(() => {
-    requestAnimationFrame(setupCanvas);
+  // Setup after element has layout dimensions
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries[0];
+    if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+      observer.disconnect();
+      requestAnimationFrame(setupCanvas);
+    }
+  });
+  observer.observe(wrapper);
+
+  // Fallback: click to reveal if scratching doesn't work
+  canvas.addEventListener('click', () => {
+    if (!revealed) {
+      revealed = true;
+      canvas.style.transition = 'opacity 0.5s';
+      canvas.style.opacity = '0';
+      hint.style.opacity = '0';
+      setTimeout(() => {
+        canvas.remove();
+        hint.remove();
+        resolvePromise();
+      }, 500);
+    }
   });
 
   wrapper._promise = promise;
