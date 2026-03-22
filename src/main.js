@@ -3,6 +3,7 @@ import './style.css';
 import { initSlideshow, goToSlide, getCurrentIndex, getTotalSlides } from './core/Slideshow.js';
 import { subscribe } from './core/PubSub.js';
 import { t, getLang, setLang } from './core/I18n.js';
+import { initAudio, toggleMute, isMuted, clickSound } from './core/Audio.js';
 
 // Slides
 import Cover from './slides/Cover.js';
@@ -38,6 +39,24 @@ const slides = [
   Act8_Sandbox,     // 16: Act 8 - Sandbox
   Act9_Conclusion,  // 17: Act 9 - Conclusion
 ];
+
+// Audio toggle (top-left)
+function createAudioToggle() {
+  const btn = document.createElement('button');
+  btn.className = 'audio-toggle';
+  btn.style.cssText = 'position:fixed;top:16px;left:16px;z-index:1000;background:transparent;border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:6px 8px;cursor:pointer;color:rgba(255,255,255,0.6);font-size:16px;line-height:1;transition:all 0.2s;';
+  const updateIcon = () => {
+    btn.innerHTML = isMuted()
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+  };
+  updateIcon();
+  btn.addEventListener('click', () => {
+    toggleMute();
+    updateIcon();
+  });
+  document.body.appendChild(btn);
+}
 
 // Language switcher
 function createLangSwitcher() {
@@ -107,9 +126,18 @@ function createNavDots() {
 function init() {
   const container = document.getElementById('slide-container');
   initSlideshow(container, slides);
+  createAudioToggle();
   createLangSwitcher();
   createNavDots();
+  initAudio();
   goToSlide(0);
+
+  // Add click sound to all button clicks
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.btn, .btn-choice, .bet-option, .rule-card, .nav-dot, .pop-stepper button')) {
+      clickSound();
+    }
+  });
 }
 
 // Start when DOM is ready
