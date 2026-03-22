@@ -3,6 +3,7 @@ import { nextSlide } from '../core/Slideshow.js';
 import { text, button, buttonGroup, appendAnimated, createPond, createResultPanel } from '../core/UI.js';
 import { MODERATE, OVERFISH, runRound, regenerate, DEFAULT_PARAMS } from '../sims/Commons.js';
 import { Greedy, Moderate, Copyfish, Grudger, Detective, CORE_STRATEGIES } from '../sims/Strategies.js';
+import { t } from '../core/I18n.js';
 
 function createCharacterCard(strategy) {
   const card = document.createElement('div');
@@ -25,20 +26,14 @@ export const Act2_Intro = {
 
     const title = document.createElement('div');
     title.className = 'text-highlight';
-    title.textContent = '第二章：重复的海洋';
+    title.textContent = t('act2.title');
     appendAnimated(content, title, 0);
 
-    appendAnimated(content, text(
-      '现在，不只是一轮——你要和对手<strong>反复博弈</strong>。<br>每轮结束后，鱼群会<strong>繁殖恢复</strong>。'
-    ), 400);
+    appendAnimated(content, text(t('act2.intro.1')), 400);
 
-    appendAnimated(content, text(
-      '渔场初始 <strong>40 条鱼</strong>，承载力 40 条。<br>每轮两艘船同时选择节制（3条）或过度（6条）。<br>然后鱼群按自然规律繁殖。'
-    ), 800);
+    appendAnimated(content, text(t('act2.intro.2')), 800);
 
-    appendAnimated(content, text(
-      '你将依次对战 <strong>5 位不同策略</strong>的对手。<br>先来认识一下他们：'
-    ), 1200);
+    appendAnimated(content, text(t('act2.intro.3')), 1200);
 
     setTimeout(() => {
       CORE_STRATEGIES.forEach((s, i) => {
@@ -46,7 +41,7 @@ export const Act2_Intro = {
       });
 
       setTimeout(() => {
-        const nextBtn = button('开始对战 →', 'btn-primary', () => nextSlide());
+        const nextBtn = button(t('act2.intro.start'), 'btn-primary', () => nextSlide());
         appendAnimated(content, nextBtn, 0);
       }, CORE_STRATEGIES.length * 200 + 400);
     }, 1600);
@@ -76,8 +71,8 @@ export const Act2_Play = {
     const updateStatus = () => {
       const opp = opponents[opponentIndex];
       statusBar.innerHTML = `
-        <span>对手: <strong style="color:${opp.color}">${opp.emoji} ${opp.name}</strong> (${opponentIndex + 1}/${opponents.length})</span>
-        <span>第 ${roundNum + 1}/${maxRounds} 轮</span>
+        <span>${t('act2.play.opponent')}: <strong style="color:${opp.color}">${opp.emoji} ${opp.name}</strong> (${opponentIndex + 1}/${opponents.length})</span>
+        <span>${t('act2.play.round')} ${roundNum + 1}/${maxRounds}</span>
       `;
     };
 
@@ -91,9 +86,9 @@ export const Act2_Play = {
 
     const updateScore = () => {
       scoreBoard.innerHTML = `
-        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">你的总分</div><div style="font-size:22px;font-weight:700;color:#4da8da">${Math.round(playerScore * 10) / 10}</div></div>
-        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">鱼群</div><div style="font-size:22px;font-weight:700;color:${population > 20 ? '#27ae60' : population > 10 ? '#f39c12' : '#e74c3c'}">${Math.round(population)}</div></div>
-        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">对手总分</div><div style="font-size:22px;font-weight:700;color:${opponents[opponentIndex].color}">${Math.round(opponentScore * 10) / 10}</div></div>
+        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">${t('act2.play.your_score')}</div><div style="font-size:22px;font-weight:700;color:#4da8da">${Math.round(playerScore * 10) / 10}</div></div>
+        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">${t('act2.play.fish_pop')}</div><div style="font-size:22px;font-weight:700;color:${population > 20 ? '#27ae60' : population > 10 ? '#f39c12' : '#e74c3c'}">${Math.round(population)}</div></div>
+        <div style="text-align:center"><div style="font-size:12px;color:rgba(255,255,255,0.4)">${t('act2.play.opp_score')}</div><div style="font-size:22px;font-weight:700;color:${opponents[opponentIndex].color}">${Math.round(opponentScore * 10) / 10}</div></div>
       `;
     };
 
@@ -123,8 +118,8 @@ export const Act2_Play = {
       mainArea.appendChild(pondEl);
 
       const btns = buttonGroup(
-        button('🟢 节制（3条）', 'btn-choice btn-moderate', () => playRound(MODERATE)),
-        button('🔴 过度（6条）', 'btn-choice btn-overfish', () => playRound(OVERFISH)),
+        button(t('act2.play.btn_moderate'), 'btn-choice btn-moderate', () => playRound(MODERATE)),
+        button(t('act2.play.btn_overfish'), 'btn-choice btn-overfish', () => playRound(OVERFISH)),
       );
       mainArea.appendChild(btns);
     };
@@ -148,9 +143,9 @@ export const Act2_Play = {
       const resultText = document.createElement('div');
       resultText.style.cssText = 'text-align:center;color:rgba(255,255,255,0.8);font-size:15px;padding:20px;';
       resultText.innerHTML = `
-        你选择了 <strong style="color:${playerChoice === MODERATE ? '#27ae60' : '#e74c3c'}">${playerChoice === MODERATE ? '节制' : '过度'}</strong> ·
-        ${opp.emoji} 选择了 <strong style="color:${oppChoice === MODERATE ? '#27ae60' : '#e74c3c'}">${oppChoice === MODERATE ? '节制' : '过度'}</strong><br>
-        <span style="font-size:13px;color:rgba(255,255,255,0.4)">鱼群: ${Math.round(population)} · 你 +${result.results[0].profit.toFixed(1)} · 对手 +${result.results[1].profit.toFixed(1)}</span>
+        ${t('act2.play.you_chose')} <strong style="color:${playerChoice === MODERATE ? '#27ae60' : '#e74c3c'}">${playerChoice === MODERATE ? t('act2.play.moderate') : t('act2.play.overfish')}</strong> ·
+        ${opp.emoji} ${t('act2.play.opp_chose')} <strong style="color:${oppChoice === MODERATE ? '#27ae60' : '#e74c3c'}">${oppChoice === MODERATE ? t('act2.play.moderate') : t('act2.play.overfish')}</strong><br>
+        <span style="font-size:13px;color:rgba(255,255,255,0.4)">${t('act2.play.fish_pop')}: ${Math.round(population)} · ${t('act2.play.your_score')}: +${result.results[0].profit.toFixed(1)} · ${t('act2.play.opp_score')}: +${result.results[1].profit.toFixed(1)}</span>
       `;
       mainArea.appendChild(resultText);
 
@@ -167,14 +162,14 @@ export const Act2_Play = {
       summary.style.cssText = 'text-align:center;padding:16px;';
       const won = playerScore > opponentScore;
       summary.innerHTML = `
-        <div style="font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:8px">对战 ${opp.emoji} ${opp.name} 结束</div>
-        <div style="font-size:20px;font-weight:700;color:${won ? '#27ae60' : '#e74c3c'}">${won ? '你赢了！' : playerScore === opponentScore ? '平局！' : '你输了！'}</div>
-        <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:8px">你: ${playerScore.toFixed(1)} vs ${opp.name}: ${opponentScore.toFixed(1)} · 鱼群剩余: ${Math.round(population)}</div>
+        <div style="font-size:16px;color:rgba(255,255,255,0.7);margin-bottom:8px">${t('act2.play.match_end')} ${opp.emoji} ${opp.name} ${t('act2.play.end')}</div>
+        <div style="font-size:20px;font-weight:700;color:${won ? '#27ae60' : '#e74c3c'}">${won ? t('act2.play.you_won') : playerScore === opponentScore ? t('act2.play.tie') : t('act2.play.you_lost')}</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);margin-top:8px">${t('act2.play.your_score')}: ${playerScore.toFixed(1)} ${t('act2.play.vs')} ${opp.name}: ${opponentScore.toFixed(1)} · ${t('act2.play.remaining')}: ${Math.round(population)}</div>
       `;
       mainArea.appendChild(summary);
 
       if (opponentIndex < opponents.length - 1) {
-        const nextBtn = button(`下一位对手: ${opponents[opponentIndex + 1].emoji} ${opponents[opponentIndex + 1].name} →`, 'btn-next', () => {
+        const nextBtn = button(`${t('act2.play.next_opp')}: ${opponents[opponentIndex + 1].emoji} ${opponents[opponentIndex + 1].name} →`, 'btn-next', () => {
           opponentIndex++;
           startMatch();
         });
@@ -185,18 +180,10 @@ export const Act2_Play = {
           mainArea.innerHTML = '';
           const finalText = document.createElement('div');
           finalText.style.cssText = 'text-align:center;color:rgba(255,255,255,0.8);font-size:16px;line-height:1.8;';
-          finalText.innerHTML = `
-            你已经见过了所有 5 种策略。<br><br>
-            <strong style="color:#27ae60">节制号</strong>对谁都友好——但容易被占便宜。<br>
-            <strong style="color:#e74c3c">贪婪号</strong>短期赚得最多——但鱼塘崩了。<br>
-            <strong style="color:#3498db">模仿号</strong>以牙还牙——似乎最"公平"。<br>
-            <strong style="color:#f39c12">记仇号</strong>一旦被伤害就永不原谅。<br>
-            <strong style="color:#8e6e53">侦探号</strong>先试探，再决定是合作还是剥削。<br><br>
-            <em style="color:#4da8da">如果让它们互相对战，谁会赢？</em>
-          `;
+          finalText.innerHTML = t('act2.play.summary');
           mainArea.appendChild(finalText);
 
-          const nextBtn = button('看看锦标赛 →', 'btn-primary', () => nextSlide());
+          const nextBtn = button(t('act2.play.tournament_btn'), 'btn-primary', () => nextSlide());
           nextBtn.style.marginTop = '16px';
           mainArea.appendChild(nextBtn);
         }, 800);

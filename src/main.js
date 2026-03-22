@@ -2,6 +2,7 @@
 import './style.css';
 import { initSlideshow, goToSlide, getCurrentIndex, getTotalSlides } from './core/Slideshow.js';
 import { subscribe } from './core/PubSub.js';
+import { t, getLang, setLang } from './core/I18n.js';
 
 // Slides
 import Cover from './slides/Cover.js';
@@ -38,23 +39,48 @@ const slides = [
   Act9_Conclusion,  // 17: Act 9 - Conclusion
 ];
 
+// Language switcher
+function createLangSwitcher() {
+  const container = document.createElement('div');
+  container.className = 'lang-switcher';
+  container.style.cssText = 'position:fixed;top:16px;right:16px;z-index:1000;display:flex;gap:4px;';
+
+  const currentLang = getLang();
+
+  ['en', 'zh'].forEach(lang => {
+    const btn = document.createElement('button');
+    btn.textContent = lang.toUpperCase();
+    btn.style.cssText = 'padding:4px 10px;border:1px solid rgba(255,255,255,0.2);background:transparent;color:rgba(255,255,255,0.5);border-radius:4px;cursor:pointer;font-size:12px;font-weight:700;font-family:sans-serif;';
+    if (lang === currentLang) {
+      btn.classList.add('active');
+      btn.style.background = 'rgba(255,255,255,0.15)';
+      btn.style.color = '#fff';
+      btn.style.borderColor = 'rgba(255,255,255,0.4)';
+    }
+    btn.addEventListener('click', () => setLang(lang));
+    container.appendChild(btn);
+  });
+
+  document.body.appendChild(container);
+}
+
 // Navigation dots
 function createNavDots() {
   const nav = document.createElement('div');
   nav.className = 'nav-dots';
 
   const acts = [
-    { label: '封面', slide: 0 },
-    { label: '序章', slide: 1 },
-    { label: '第一章', slide: 4 },
-    { label: '第二章', slide: 8 },
-    { label: '第三章', slide: 10 },
-    { label: '第四章', slide: 11 },
-    { label: '第五章', slide: 12 },
-    { label: '第六章', slide: 14 },
-    { label: '第七章', slide: 15 },
-    { label: '沙盒', slide: 16 },
-    { label: '终章', slide: 17 },
+    { label: t('nav.cover'), slide: 0 },
+    { label: t('nav.prologue'), slide: 1 },
+    { label: t('nav.ch1'), slide: 4 },
+    { label: t('nav.ch2'), slide: 8 },
+    { label: t('nav.ch3'), slide: 10 },
+    { label: t('nav.ch4'), slide: 11 },
+    { label: t('nav.ch5'), slide: 12 },
+    { label: t('nav.ch6'), slide: 14 },
+    { label: t('nav.ch7'), slide: 15 },
+    { label: t('nav.sandbox'), slide: 16 },
+    { label: t('nav.finale'), slide: 17 },
   ];
 
   acts.forEach(act => {
@@ -81,6 +107,7 @@ function createNavDots() {
 function init() {
   const container = document.getElementById('slide-container');
   initSlideshow(container, slides);
+  createLangSwitcher();
   createNavDots();
   goToSlide(0);
 }

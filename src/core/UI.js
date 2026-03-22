@@ -1,4 +1,5 @@
 // UI component helpers
+import { t } from './I18n.js';
 
 // Sequentially reveal text blocks with delay
 export function revealTexts(container, delay = 400) {
@@ -41,7 +42,7 @@ export function createPond(fishCount, maxFish = 20) {
 
   const label = document.createElement('div');
   label.className = 'pond-label';
-  label.textContent = '渔场';
+  label.textContent = t('ui.pond');
   pond.appendChild(label);
 
   const count = document.createElement('div');
@@ -94,7 +95,7 @@ export function createBoat(name, icon, isPlayer = false) {
   boat.appendChild(catchEl);
 
   boat._setCatch = (n) => {
-    catchEl.textContent = n !== undefined ? `捕获 ${n} 条` : '';
+    catchEl.textContent = n !== undefined ? t('ui.catch').replace('{n}', n) : '';
   };
 
   return boat;

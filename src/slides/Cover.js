@@ -1,6 +1,7 @@
 // Cover slide — game title, author, links
 import { nextSlide } from '../core/Slideshow.js';
 import { button, appendAnimated } from '../core/UI.js';
+import { t } from '../core/I18n.js';
 
 export default {
   id: 'cover',
@@ -27,14 +28,14 @@ export default {
     title.style.fontSize = '56px';
     title.style.letterSpacing = '12px';
     title.style.lineHeight = '1.4';
-    title.innerHTML = '公地的进化';
+    title.innerHTML = t('cover.title');
     content.appendChild(title);
 
     // Subtitle
     const subtitle = document.createElement('div');
     subtitle.className = 'text-subtitle';
     subtitle.style.marginTop = '-8px';
-    subtitle.innerHTML = 'The Evolution of the Commons';
+    subtitle.innerHTML = t('cover.subtitle');
     content.appendChild(subtitle);
 
     // Divider
@@ -47,11 +48,11 @@ export default {
     desc.className = 'text-subtitle';
     desc.style.maxWidth = '400px';
     desc.style.lineHeight = '1.8';
-    desc.innerHTML = '一个关于"公地悲剧"的互动式可探索解释<br>游玩时间约 25 分钟';
+    desc.innerHTML = t('cover.desc');
     content.appendChild(desc);
 
     // Start button
-    const startBtn = button('开始 →', 'btn-primary', () => nextSlide());
+    const startBtn = button(t('cover.start'), 'btn-primary', () => nextSlide());
     startBtn.style.marginTop = '20px';
     startBtn.style.padding = '16px 48px';
     startBtn.style.fontSize = '18px';
@@ -61,11 +62,7 @@ export default {
     const credits = document.createElement('div');
     credits.className = 'cover-credits';
     credits.style.marginTop = '32px';
-    credits.innerHTML = `
-      灵感来源于 Nicky Case 的 <a href="https://ncase.me/trust/" target="_blank">The Evolution of Trust</a><br>
-      Made by <a href="https://ursb.me" target="_blank">Airing</a> ·
-      <a href="https://github.com/airingursb/overgrazing" target="_blank">GitHub</a>
-    `;
+    credits.innerHTML = t('cover.credits');
     content.appendChild(credits);
   },
 

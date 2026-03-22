@@ -4,6 +4,7 @@ import { text, button, appendAnimated, createSlider } from '../core/UI.js';
 import { runEvolution, DEFAULT_PARAMS, MODERATE, OVERFISH } from '../sims/Commons.js';
 import { ALL_STRATEGIES } from '../sims/Strategies.js';
 import { createEvolutionChart } from '../core/Chart.js';
+import { t } from '../core/I18n.js';
 
 export const Act8_Sandbox = {
   id: 'act8-sandbox',
@@ -13,12 +14,12 @@ export const Act8_Sandbox = {
 
     const title = document.createElement('div');
     title.className = 'text-highlight';
-    title.textContent = '第八章：沙盒模式';
+    title.textContent = t('act8.title');
     content.appendChild(title);
 
     const subtitle = document.createElement('div');
     subtitle.style.cssText = 'font-size:14px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:8px;';
-    subtitle.textContent = '自由调整所有参数，设计你自己的渔场——然后观察进化会发生什么。';
+    subtitle.textContent = t('act8.subtitle');
     content.appendChild(subtitle);
 
     // Layout
@@ -34,7 +35,7 @@ export const Act8_Sandbox = {
     // Population controls
     const popSection = document.createElement('div');
     popSection.className = 'control-section';
-    popSection.innerHTML = '<h3>🐟 初始种群</h3>';
+    popSection.innerHTML = `<h3>${t('act8.pop_title')}</h3>`;
     controls.appendChild(popSection);
 
     const popCounts = [3, 4, 4, 3, 2, 3, 2, 1, 3]; // Default counts for each strategy
@@ -92,23 +93,23 @@ export const Act8_Sandbox = {
     // Parameters section
     const paramSection = document.createElement('div');
     paramSection.className = 'control-section';
-    paramSection.innerHTML = '<h3>⚙️ 参数</h3>';
+    paramSection.innerHTML = `<h3>${t('act8.param_title')}</h3>`;
     controls.appendChild(paramSection);
 
-    const roundsSlider = createSlider('博弈轮数', 1, 20, 8, 1);
+    const roundsSlider = createSlider(t('act8.rounds'), 1, 20, 8, 1);
     paramSection.appendChild(roundsSlider);
 
-    const genSlider = createSlider('进化代数', 5, 30, 15, 1);
+    const genSlider = createSlider(t('act8.gens'), 5, 30, 15, 1);
     paramSection.appendChild(genSlider);
 
-    const noiseSlider = createSlider('噪音率 %', 0, 50, 5, 1);
+    const noiseSlider = createSlider(t('act8.noise'), 0, 50, 5, 1);
     paramSection.appendChild(noiseSlider);
 
-    const scarcitySlider = createSlider('稀缺溢价', 0, 3, 0.5, 0.1);
+    const scarcitySlider = createSlider(t('act8.scarcity'), 0, 3, 0.5, 0.1);
     paramSection.appendChild(scarcitySlider);
 
     // Run button
-    const runBtn = button('▶ 运行模拟', 'btn-primary', runSimulation);
+    const runBtn = button(t('act8.run'), 'btn-primary', runSimulation);
     runBtn.style.width = '100%';
     controls.appendChild(runBtn);
 
@@ -127,7 +128,7 @@ export const Act8_Sandbox = {
 
     function runSimulation() {
       chartArea.innerHTML = '';
-      resultText.innerHTML = '<em>模拟进行中……</em>';
+      resultText.innerHTML = `<em>${t('act8.running')}</em>`;
       runBtn.disabled = true;
 
       const noise = noiseSlider._getValue() / 100;
@@ -166,14 +167,14 @@ export const Act8_Sandbox = {
             .filter(x => x.count > 0)
             .sort((a, b) => b.count - a.count);
 
-          let html = '<strong>最终种群分布：</strong><br>';
+          let html = `<strong>${t('act8.result_title')}</strong><br>`;
           winners.forEach(w => {
             const pct = Math.round(w.count / total * 100);
             html += `<span style="color:${w.strategy.color}">${w.strategy.emoji} ${w.strategy.name}: ${w.count} (${pct}%)</span><br>`;
           });
 
           if (winners[0]) {
-            html += `<br>🏆 <strong style="color:${winners[0].strategy.color}">${winners[0].strategy.name}</strong> 主导了这个世界。`;
+            html += `<br>${t('act8.dominant').replace('{color}', winners[0].strategy.color).replace('{name}', winners[0].strategy.name)}`;
           }
 
           resultText.innerHTML = html;
@@ -186,7 +187,7 @@ export const Act8_Sandbox = {
     skipArea.style.cssText = 'width:100%;text-align:center;margin-top:16px;';
     content.appendChild(skipArea);
 
-    const skipBtn = button('我玩够了，看看结论 →', 'btn-next', () => nextSlide());
+    const skipBtn = button(t('act8.skip'), 'btn-next', () => nextSlide());
     skipArea.appendChild(skipBtn);
 
     // Auto-run first simulation

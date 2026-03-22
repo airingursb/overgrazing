@@ -1,6 +1,7 @@
 // ACT 1: 捕鱼的博弈 — 单轮决策
 import { nextSlide } from '../core/Slideshow.js';
 import { text, button, buttonGroup, appendAnimated, createPond, createBoat, createResultPanel, wait } from '../core/UI.js';
+import { t } from '../core/I18n.js';
 
 // Slide 1.1: Setup
 export const Act1_Setup = {
@@ -10,30 +11,28 @@ export const Act1_Setup = {
 
     const title = document.createElement('div');
     title.className = 'text-highlight';
-    title.textContent = '第一章：捕鱼的博弈';
+    title.textContent = t('act1.title');
     appendAnimated(content, title, 0);
 
-    appendAnimated(content, text('你面前有一片渔场。渔场里有 <strong>20 条鱼</strong>。<br>你和另外 3 艘渔船共享这片海域。'), 400);
+    appendAnimated(content, text(t('act1.setup.1')), 400);
 
     // Show pond
     const pond = createPond(20);
     appendAnimated(content, pond, 800);
 
-    appendAnimated(content, text(
-      '每艘船可以选择：<br>🟢 <strong>"节制捕捞"</strong>（捞 2 条）或 🔴 <strong>"过度捕捞"</strong>（捞 5 条）<br>每条鱼值 1 金币，出海成本 2 金币。'
-    ), 1200);
+    appendAnimated(content, text(t('act1.setup.2')), 1200);
 
     // Boats
     const boats = document.createElement('div');
     boats.className = 'boats-container';
-    boats.appendChild(createBoat('你', '⛵', true));
-    boats.appendChild(createBoat('渔船 A', '🚤'));
-    boats.appendChild(createBoat('渔船 B', '🚤'));
-    boats.appendChild(createBoat('渔船 C', '🚤'));
+    boats.appendChild(createBoat(t('act1.setup.you'), '⛵', true));
+    boats.appendChild(createBoat(t('act1.setup.boat') + ' A', '🚤'));
+    boats.appendChild(createBoat(t('act1.setup.boat') + ' B', '🚤'));
+    boats.appendChild(createBoat(t('act1.setup.boat') + ' C', '🚤'));
     appendAnimated(content, boats, 1600);
 
     setTimeout(() => {
-      const nextBtn = button('开始第一轮 →', 'btn-next', () => nextSlide());
+      const nextBtn = button(t('act1.setup.start'), 'btn-next', () => nextSlide());
       appendAnimated(content, nextBtn, 0);
     }, 2000);
   },
@@ -45,15 +44,15 @@ export const Act1_Choice1 = {
   build(content, slide) {
     slide.style.background = 'linear-gradient(180deg, #0d2137 0%, #0d1b2a 100%)';
 
-    appendAnimated(content, text('假设其他 3 艘船<strong style="color:#e74c3c">都选择了过度捕捞</strong>，每艘捞 5 条。'), 0);
-    appendAnimated(content, text('<em>你怎么选？</em>'), 500);
+    appendAnimated(content, text(t('act1.c1.premise')), 0);
+    appendAnimated(content, text(t('act1.c1.question')), 500);
 
     const pond = createPond(20);
     appendAnimated(content, pond, 300);
 
     const btns = buttonGroup(
-      button('🟢 节制捕捞（捞 2 条）', 'btn-choice btn-moderate', () => handleChoice(false)),
-      button('🔴 过度捕捞（捞 5 条）', 'btn-choice btn-overfish', () => handleChoice(true)),
+      button(t('act1.btn.moderate'), 'btn-choice btn-moderate', () => handleChoice(false)),
+      button(t('act1.btn.overfish'), 'btn-choice btn-overfish', () => handleChoice(true)),
     );
     appendAnimated(content, btns, 1000);
 
@@ -70,24 +69,22 @@ export const Act1_Choice1 = {
 
       setTimeout(() => {
         if (overfish) {
-          appendAnimated(content, text('没错！别人都在拼命捞，你不多捞就亏了。'), 0);
+          appendAnimated(content, text(t('act1.c1.overfish')), 0);
         } else {
-          appendAnimated(content, text('很遗憾，你的克制并没有拯救这片渔场。<br>其他人捞了 15 条，你只捞了 2 条。'), 0);
+          appendAnimated(content, text(t('act1.c1.moderate')), 0);
         }
 
         const panel = createResultPanel([
-          { label: '你的捕获', value: `${playerCatch} 条`, type: overfish ? 'warning' : '' },
-          { label: '你的利润', value: `${playerProfit} 金币`, type: playerProfit > 0 ? 'positive' : 'negative' },
-          { label: '其他船捕获', value: '15 条 (每船 5 条)', type: 'negative' },
-          { label: '渔场剩余', value: `${remaining} 条`, type: remaining <= 5 ? 'negative' : 'warning' },
+          { label: t('act1.label.your_catch'), value: playerCatch + ' ' + t('act1.unit.fish'), type: overfish ? 'warning' : '' },
+          { label: t('act1.label.your_profit'), value: playerProfit + ' ' + t('act1.unit.coin'), type: playerProfit > 0 ? 'positive' : 'negative' },
+          { label: t('act1.label.others_catch'), value: '15 ' + t('act1.unit.fish') + ' (5 ' + t('act1.unit.per_boat') + ')', type: 'negative' },
+          { label: t('act1.label.remaining'), value: remaining + ' ' + t('act1.unit.fish'), type: remaining <= 5 ? 'negative' : 'warning' },
         ]);
         appendAnimated(content, panel, 400);
 
         setTimeout(() => {
-          appendAnimated(content, text(
-            '不管怎样，渔场都快完了。<br>但至少过度捕捞让你<strong>"多赚了 3 金币"</strong>。<br><br>因此：在别人过度捕捞时，你<strong>"应该"</strong>也过度捕捞。'
-          ), 0);
-          const nextBtn = button('再试一次 →', 'btn-next', () => nextSlide());
+          appendAnimated(content, text(t('act1.c1.lesson')), 0);
+          const nextBtn = button(t('act1.c1.next'), 'btn-next', () => nextSlide());
           appendAnimated(content, nextBtn, 600);
         }, 800);
       }, 800);
@@ -101,15 +98,15 @@ export const Act1_Choice2 = {
   build(content, slide) {
     slide.style.background = 'linear-gradient(180deg, #0d2137 0%, #0d1b2a 100%)';
 
-    appendAnimated(content, text('好，再来一次。<br>这次假设其他 3 艘船<strong style="color:#27ae60">都选择了节制捕捞</strong>，每艘只捞 2 条。'), 0);
-    appendAnimated(content, text('<em>你怎么选？</em>'), 500);
+    appendAnimated(content, text(t('act1.c2.premise')), 0);
+    appendAnimated(content, text(t('act1.c1.question')), 500);
 
     const pond = createPond(20);
     appendAnimated(content, pond, 300);
 
     const btns = buttonGroup(
-      button('🟢 节制捕捞（捞 2 条）', 'btn-choice btn-moderate', () => handleChoice(false)),
-      button('🔴 过度捕捞（捞 5 条）', 'btn-choice btn-overfish', () => handleChoice(true)),
+      button(t('act1.btn.moderate'), 'btn-choice btn-moderate', () => handleChoice(false)),
+      button(t('act1.btn.overfish'), 'btn-choice btn-overfish', () => handleChoice(true)),
     );
     appendAnimated(content, btns, 1000);
 
@@ -126,29 +123,27 @@ export const Act1_Choice2 = {
 
       setTimeout(() => {
         if (overfish) {
-          appendAnimated(content, text('这有点不厚道……但从数学上看，你是对的。'), 0);
+          appendAnimated(content, text(t('act1.c2.overfish')), 0);
         } else {
-          appendAnimated(content, text('看起来是正确的选择……但真的是吗？'), 0);
+          appendAnimated(content, text(t('act1.c2.moderate')), 0);
         }
 
         const panel = createResultPanel([
-          { label: '你的捕获', value: `${playerCatch} 条`, type: overfish ? 'warning' : '' },
-          { label: '你的利润', value: `${playerProfit} 金币`, type: playerProfit > 0 ? 'positive' : '' },
-          { label: '其他船捕获', value: '6 条 (每船 2 条)', type: 'positive' },
-          { label: '渔场剩余', value: `${remaining} 条`, type: remaining > 10 ? 'positive' : 'warning' },
+          { label: t('act1.label.your_catch'), value: playerCatch + ' ' + t('act1.unit.fish'), type: overfish ? 'warning' : '' },
+          { label: t('act1.label.your_profit'), value: playerProfit + ' ' + t('act1.unit.coin'), type: playerProfit > 0 ? 'positive' : '' },
+          { label: t('act1.label.others_catch'), value: '6 ' + t('act1.unit.fish') + ' (2 ' + t('act1.unit.per_boat') + ')', type: 'positive' },
+          { label: t('act1.label.remaining'), value: remaining + ' ' + t('act1.unit.fish'), type: remaining > 10 ? 'positive' : 'warning' },
         ]);
         appendAnimated(content, panel, 400);
 
         setTimeout(() => {
           appendAnimated(content, text(
             overfish
-              ? '虽然大家都节制时渔场最健康，<br>但你偷偷多捞一点，赚了最多——<strong>而且渔场也没崩</strong>。'
-              : '大家都节制时，渔场还有 12 条鱼，很健康。<br>但如果你偷偷多捞……你能赚更多，渔场也还撑得住。'
+              ? t('act1.c2.lesson_overfish')
+              : t('act1.c2.lesson_moderate')
           ), 0);
-          appendAnimated(content, text(
-            '因此：即使别人都节制，你<strong>"应该"</strong>还是过度捕捞。'
-          ), 600);
-          const nextBtn = button('这意味着什么？ →', 'btn-next', () => nextSlide());
+          appendAnimated(content, text(t('act1.c2.conclusion')), 600);
+          const nextBtn = button(t('act1.c2.next'), 'btn-next', () => nextSlide());
           appendAnimated(content, nextBtn, 1200);
         }, 800);
       }, 800);
@@ -164,14 +159,12 @@ export const Act1_Reveal = {
 
     const title = document.createElement('div');
     title.className = 'text-highlight';
-    title.textContent = '这就是公地的困境';
+    title.textContent = t('act1.reveal.title');
     appendAnimated(content, title, 0);
 
-    appendAnimated(content, text(
-      '不管其他人怎么做——<br><strong>"过度捕捞"对你个人来说，似乎总是更好的选择。</strong>'
-    ), 500);
+    appendAnimated(content, text(t('act1.reveal.1')), 500);
 
-    appendAnimated(content, text('但如果每个人都这么想……'), 1000);
+    appendAnimated(content, text(t('act1.reveal.2')), 1000);
 
     // Animated collapse
     const pond = createPond(20);
@@ -186,20 +179,12 @@ export const Act1_Reveal = {
         if (count <= 0) {
           clearInterval(interval);
           setTimeout(() => {
-            appendAnimated(content, text(
-              '所有人都赚了 3 金币。但渔场的鱼<strong style="color:#e74c3c">全部捞完了</strong>。<br>没有了鱼，明天就没有收入。'
-            ), 0);
-            appendAnimated(content, text(
-              '如果大家都节制呢？<br>每人赚 0 金币——但渔场还有 12 条鱼。<br>鱼会繁殖，明天还能继续捕。'
-            ), 600);
-            appendAnimated(content, text(
-              '短期来看，贪婪是<strong>"理性"</strong>的。<br>长期来看……'
-            ), 1200);
+            appendAnimated(content, text(t('act1.reveal.3')), 0);
+            appendAnimated(content, text(t('act1.reveal.4')), 600);
+            appendAnimated(content, text(t('act1.reveal.5')), 1200);
             setTimeout(() => {
-              appendAnimated(content, text(
-                '等一下。在刚才的游戏里，你只玩了<strong>一轮</strong>。<br>渔场不是一次性的——渔民每天都要出海。<br><em>如果不是一锤子买卖，而是反复博弈呢？</em>'
-              ), 0);
-              const nextBtn = button('……玩很多很多轮呢？→', 'btn-primary', () => nextSlide());
+              appendAnimated(content, text(t('act1.reveal.6')), 0);
+              const nextBtn = button(t('act1.reveal.next'), 'btn-primary', () => nextSlide());
               nextBtn.style.marginTop = '8px';
               appendAnimated(content, nextBtn, 600);
             }, 1800);

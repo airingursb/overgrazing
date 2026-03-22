@@ -4,6 +4,7 @@ import { text, button, appendAnimated, createSlider } from '../core/UI.js';
 import { runEvolution, DEFAULT_PARAMS, MODERATE, OVERFISH } from '../sims/Commons.js';
 import { Copyfish, Forgiving, Simpleton, Random, Greedy, Moderate, CORE_STRATEGIES, EXTENDED_STRATEGIES } from '../sims/Strategies.js';
 import { createEvolutionChart } from '../core/Chart.js';
+import { t } from '../core/I18n.js';
 
 // Create noisy versions of strategies
 function addNoise(strategy, noiseRate) {
@@ -28,26 +29,26 @@ export const Act6_Noise = {
 
     const title = document.createElement('div');
     title.className = 'text-highlight';
-    title.textContent = '第六章：噪音与宽容';
+    title.textContent = t('act6.title');
     appendAnimated(content, title, 0);
 
     appendAnimated(content, text(
-      '模仿号虽然厉害，但它有一个<strong style="color:#e74c3c">致命的弱点</strong>。'
+      t('act6.intro1')
     ), 400);
 
     appendAnimated(content, text(
-      '想象两艘模仿号在同一片渔场。<br>正常情况下，它们会一直合作——永远和平。<br><br>但如果有一天，其中一艘<strong>不小心</strong>多捞了几条呢？<br>也许是看错了数量，也许是网太大了——总之，是个<strong>意外</strong>。'
+      t('act6.intro2')
     ), 800);
 
     appendAnimated(content, text(
-      '模仿号的反应是什么？<strong>报复。</strong><br>然后对方也报复。然后你再报复……<br><br>一次意外，引发<strong>无限循环的报复战争</strong>。<br>这就是现实中<em>"世仇"</em>和<em>"螺旋升级"</em>的原因。'
+      t('act6.intro3')
     ), 1400);
 
     appendAnimated(content, text(
-      '在真实世界中，"噪音"——误解、意外、信息不完全——<br>是无法避免的。<br><br>试试调节噪音率，看看对进化的影响：'
+      t('act6.intro4')
     ), 2000);
 
-    const noiseSlider = createSlider('噪音率（误操作概率）', 0, 50, 0, 1, (val) => {
+    const noiseSlider = createSlider(t('act6.slider'), 0, 50, 0, 1, (val) => {
       runNoiseSim(val / 100);
     });
     appendAnimated(content, noiseSlider, 2400);
@@ -77,13 +78,13 @@ export const Act6_Noise = {
 
       const noisePercent = Math.round(noise * 100);
       if (noisePercent === 0) {
-        infoText.innerHTML = '零噪音——<strong style="color:#3498db">模仿号</strong>表现最好。完美的世界。';
+        infoText.innerHTML = t('act6.zero');
       } else if (noisePercent <= 5) {
-        infoText.innerHTML = `${noisePercent}% 噪音——<strong style="color:#9b59b6">宽容号</strong>开始超越模仿号。<br>偶尔的误解需要宽容来化解。`;
+        infoText.innerHTML = t('act6.low').replace('{n}', noisePercent);
       } else if (noisePercent <= 15) {
-        infoText.innerHTML = `${noisePercent}% 噪音——模仿号陷入报复螺旋，<br><strong style="color:#9b59b6">宽容号</strong>和<strong style="color:#bdc3c7">憨憨号</strong>更有优势。`;
+        infoText.innerHTML = t('act6.mid').replace('{n}', noisePercent);
       } else {
-        infoText.innerHTML = `${noisePercent}% 噪音——世界一片混乱。<br>当误解太多时，<strong style="color:#e74c3c">谁都无法建立稳定的合作</strong>。`;
+        infoText.innerHTML = t('act6.high').replace('{n}', noisePercent);
       }
     };
 
@@ -91,17 +92,14 @@ export const Act6_Noise = {
 
     setTimeout(() => {
       appendAnimated(content, text(
-        '<strong>关键发现：</strong><br>' +
-        '零噪音 → 模仿号赢（精确报复有效）<br>' +
-        '低噪音 → <strong style="color:#9b59b6">宽容号</strong>赢（宽容化解误会）<br>' +
-        '高噪音 → 一切崩溃（合作无法建立）'
+        t('act6.findings')
       ), 0);
 
       appendAnimated(content, text(
-        '噪音会破坏合作。<br><strong>但是</strong>——现实世界中有些渔场却管理得很好！<br>它们是怎么做到的？'
+        t('act6.transition')
       ), 600);
 
-      const nextBtn = button('让我们看看解决方案 →', 'btn-primary', () => nextSlide());
+      const nextBtn = button(t('act6.next'), 'btn-primary', () => nextSlide());
       appendAnimated(content, nextBtn, 1200);
     }, 4500);
   },

@@ -1,4 +1,5 @@
 // Scratch card interaction component
+import { t } from './I18n.js';
 
 export function createScratchCard(contentHTML, width = '100%') {
   const wrapper = document.createElement('div');
@@ -19,7 +20,7 @@ export function createScratchCard(contentHTML, width = '100%') {
   // Hint text
   const hint = document.createElement('div');
   hint.className = 'scratch-hint';
-  hint.textContent = '👆 用鼠标刮开看看';
+  hint.textContent = t('act0.scratch.hint');
   wrapper.appendChild(hint);
 
   let revealed = false;
